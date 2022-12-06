@@ -4,6 +4,7 @@ using GraphQL.Client.Serializer.Newtonsoft;
 using MI_PR_Data_Entry.StartggObjects;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MI_PR_Data_Entry
@@ -73,8 +74,6 @@ namespace MI_PR_Data_Entry
         {
             int targetIdAsInt = Int32.Parse(targetPlayerId);
 
-            //tempTournamentResultStorage = null;
-
             GraphQLRequest query = new GraphQLRequest
             {
                 Query = @"
@@ -127,7 +126,12 @@ namespace MI_PR_Data_Entry
             try
             {
                 if (response.Data != null)
-                {
+                {//If the player didn't enter, nodes.Length will equal 0.
+                    if (response.Data.tournamentEvent.sets.nodes.Length == 0)
+                    {
+                        return;
+                    }
+
                     trackedPlayer.tournamentResult = new TournamentResult();
                     TournamentResult tResult = trackedPlayer.tournamentResult;
 
@@ -231,6 +235,7 @@ namespace MI_PR_Data_Entry
         {
             GraphQLClientSetup();
 
+            bool setTournamentInfo = false;
             foreach (TrackedPlayer trackedPlayer in GoogleSheetsManager.trackedPlayers)
             {
                 foreach (string pId in trackedPlayer.startggPlayerIds)
@@ -241,6 +246,12 @@ namespace MI_PR_Data_Entry
                     {
                         break;
                     }
+                }
+
+                if (trackedPlayer.tournamentResult != null && !setTournamentInfo)
+                {
+                    GoogleSheetsManager.SetGeneralTournamentInfo(trackedPlayer.tournamentResult);
+                    setTournamentInfo = true;
                 }
             }
         }

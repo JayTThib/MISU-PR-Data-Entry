@@ -245,13 +245,14 @@ namespace MI_PR_Data_Entry
                 }
                 catch (Exception ex)
                 {
-                    errorMessage = ex.Message;
+                    errorMessage = ex.ToString();
                     ErrorHandler();
                     return;
                 }
             }
             #endregion
 
+            targetRecordsColumnTextBox.Text = string.Empty;
             SuccessfullyFinishedProcessing(eventSlugTextBox);
         }
 

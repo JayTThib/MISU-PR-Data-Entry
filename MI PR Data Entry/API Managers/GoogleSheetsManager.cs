@@ -6,6 +6,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
 using Google.Apis.Sheets.v4.Data;
+using System.Runtime.CompilerServices;
 
 namespace MI_PR_Data_Entry
 {
@@ -43,6 +44,10 @@ namespace MI_PR_Data_Entry
         private static IEnumerable<string> Scopes = new string[] { SheetsService.Scope.Spreadsheets };
         private static SheetsService service;
 
+        private static string tournamentName;
+        private static string eventDate;
+        private static int numEntrants;
+
         public const string defaultAppName = "MISU PR Data Entry";
         private const string recordsSheetDataColumnStart = "C";
         private const int recordsSheetTournamentNameRow = 1;
@@ -62,6 +67,13 @@ namespace MI_PR_Data_Entry
 
         #endregion
 
+
+        public static void SetGeneralTournamentInfo(TournamentResult tournamentResult)
+        {
+            tournamentName = tournamentResult.tournamentName;
+            eventDate = tournamentResult.eventDate;
+            numEntrants = tournamentResult.numEntrants;
+        }
 
         public static async Task SetupService()
         {
@@ -154,7 +166,14 @@ namespace MI_PR_Data_Entry
             
             for (int i = 0; i < trackedPlayers.Count; i++)
             {
-                targetRange.Values.Add(new List<object>() { trackedPlayers[i].tournamentResult.placement.ToString() });
+                if (trackedPlayers[i].tournamentResult != null)
+                {
+                    targetRange.Values.Add(new List<object>() { trackedPlayers[i].tournamentResult.placement.ToString() });
+                }
+                else
+                {
+                    targetRange.Values.Add(new List<object>() { string.Empty });
+                }
             }
 
             SpreadsheetsResource.ValuesResource.UpdateRequest updateRequest = service.Spreadsheets.Values.Update(targetRange, spreadsheetId, targetRange.Range);
@@ -191,10 +210,9 @@ namespace MI_PR_Data_Entry
             targetRange.Range = sheetRange.GetFormattedRange();
             targetRange.Values = new List<IList<object>>();
 
-            const int firstIndex = 0;
-            targetRange.Values.Add(new List<object>() { trackedPlayers[firstIndex].tournamentResult.tournamentName });
-            targetRange.Values.Add(new List<object>() { trackedPlayers[firstIndex].tournamentResult.eventDate });
-            targetRange.Values.Add(new List<object>() { trackedPlayers[firstIndex].tournamentResult.numEntrants.ToString() });
+            targetRange.Values.Add(new List<object>() { tournamentName });
+            targetRange.Values.Add(new List<object>() { eventDate });
+            targetRange.Values.Add(new List<object>() { numEntrants.ToString() });
 
             SpreadsheetsResource.ValuesResource.UpdateRequest updateRequest = service.Spreadsheets.Values.Update(targetRange, spreadsheetId, targetRange.Range);
             updateRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
