@@ -64,11 +64,12 @@ namespace MI_PR_Data_Entry
         private const string userSlugsColumn = "D";
         private const string startggPlayerIdsColumn = "E";
         private const string spreadsheetPlayerNameColumn = "B";
+        private const string entrantsLabelStarter = "Entrants: ";
 
         #endregion
 
 
-        public static void SetGeneralTournamentInfo(TournamentResult tournamentResult)
+        public static void SetGeneralTournamentInfo(TournamentResult tournamentResult)//rename? or rename the other method that sounds similar 
         {
             tournamentName = tournamentResult.tournamentName;
             eventDate = tournamentResult.eventDate;
@@ -212,7 +213,7 @@ namespace MI_PR_Data_Entry
 
             targetRange.Values.Add(new List<object>() { tournamentName });
             targetRange.Values.Add(new List<object>() { eventDate });
-            targetRange.Values.Add(new List<object>() { numEntrants.ToString() });
+            targetRange.Values.Add(new List<object>() { entrantsLabelStarter + numEntrants.ToString() });
 
             SpreadsheetsResource.ValuesResource.UpdateRequest updateRequest = service.Spreadsheets.Values.Update(targetRange, spreadsheetId, targetRange.Range);
             updateRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
