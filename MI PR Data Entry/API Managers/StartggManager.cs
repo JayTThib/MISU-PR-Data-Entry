@@ -4,7 +4,6 @@ using GraphQL.Client.Serializer.Newtonsoft;
 using MI_PR_Data_Entry.StartggObjects;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MI_PR_Data_Entry
