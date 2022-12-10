@@ -70,5 +70,125 @@ namespace MI_PR_Data_Entry.Properties {
                 this["appName"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string recordsSheetName {
+            get {
+                return ((string)(this["recordsSheetName"]));
+            }
+            set {
+                this["recordsSheetName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string placementsSheetName {
+            get {
+                return ((string)(this["placementsSheetName"]));
+            }
+            set {
+                this["placementsSheetName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string trackedPlayersSheetName {
+            get {
+                return ((string)(this["trackedPlayersSheetName"]));
+            }
+            set {
+                this["trackedPlayersSheetName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string recordsPlayerNames {
+            get {
+                return ((string)(this["recordsPlayerNames"]));
+            }
+            set {
+                this["recordsPlayerNames"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string recordsPlayerData {
+            get {
+                return ((string)(this["recordsPlayerData"]));
+            }
+            set {
+                this["recordsPlayerData"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string eventGeneralInfo {
+            get {
+                return ((string)(this["eventGeneralInfo"]));
+            }
+            set {
+                this["eventGeneralInfo"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string trackedPlayersPlayerNames {
+            get {
+                return ((string)(this["trackedPlayersPlayerNames"]));
+            }
+            set {
+                this["trackedPlayersPlayerNames"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string userSlugs {
+            get {
+                return ((string)(this["userSlugs"]));
+            }
+            set {
+                this["userSlugs"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string playerIds {
+            get {
+                return ((string)(this["playerIds"]));
+            }
+            set {
+                this["playerIds"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string placementsData {
+            get {
+                return ((string)(this["placementsData"]));
+            }
+            set {
+                this["placementsData"] = value;
+            }
+        }
     }
 }
