@@ -69,6 +69,49 @@ namespace MI_PR_Data_Entry
         #endregion
 
 
+
+        public static Task TestingNamedRanges()
+        {
+            try
+            {
+                SpreadsheetsResource.ValuesResource.GetRequest request = service.Spreadsheets.Values.Get(spreadsheetId, "RecordsEventNameStart");
+
+                ValueRange response = request.Execute();
+
+                IList<IList<object>> values = response.Values;
+
+                if (values != null)
+                {
+                    if (values.Count > 0)
+                    {
+                        foreach (IList<object> objj in values)
+                        {
+                            Console.WriteLine("OBJJ - " + objj.ToString());
+                            foreach (object temppp in objj)
+                            {
+                                Console.WriteLine("tempp - " + temppp.ToString());
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("count was 0");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("values is null");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+
+            return Task.CompletedTask;
+        }
+
+
         public static void SetGeneralTournamentInfo(TournamentResult tournamentResult)//rename? or rename the other method that sounds similar 
         {
             tournamentName = tournamentResult.tournamentName;

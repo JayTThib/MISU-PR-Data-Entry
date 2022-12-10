@@ -11,7 +11,6 @@ namespace MI_PR_Data_Entry
         private enum OperationMode { PlayerId, PlacementsAndRecords }
 
         #region Fields / properties / constants
-
         public static TextBox targetRecordsColumnTB;
         public static string errorMessage;
 
@@ -131,6 +130,7 @@ namespace MI_PR_Data_Entry
         public MainForm()
         {
             InitializeComponent();
+            SheetSettings.LoadSavedSettings();
 
             playerIdModeControls = new List<Control>()
             {
@@ -215,6 +215,19 @@ namespace MI_PR_Data_Entry
         {
             GeneralProcessingStart();
 
+            if (Validator.ClientSecretFileDoesntExist(clientSecretsPathTextBox.Text) || Validator.AppNameIsInvalid(appNameTextBox.Text) || Validator.InvalidPrSheetLink(sheetIdTextBox))
+            {
+                ErrorHandler();
+                return;
+            }
+
+            await GoogleSheetsManager.SetupService();
+            await GoogleSheetsManager.TestingNamedRanges();
+            Console.WriteLine("FINISHED");
+            return;
+
+
+
             if (Validator.InvalidPrSheetLink(sheetIdTextBox)
                 || Validator.InvalidStartggApiKey(apiKeyTextBox)
                 || Validator.EventSlugIsInvalid(eventSlugTextBox.Text)
@@ -224,7 +237,7 @@ namespace MI_PR_Data_Entry
                 ErrorHandler();
                 return;
             }
-            
+
             #region Try to call the APIs and process data (step by step, not simultaneously); if it fails at any point then abort doing the rest of the steps.
             Dictionary<Func<Task>, string> funcAndStatusDict = new Dictionary<Func<Task>, string>()
             {
