@@ -8,7 +8,7 @@ namespace MI_PR_Data_Entry
     {
         public static bool InvalidPrSheetLink(TextBox sheetLinkTextBox)
         {
-            const string Dtarget = "/d/";
+            const string TargetD = "/d/";
             const char TargetSlash = '/';
 
             if (sheetLinkTextBox.Text == string.Empty)
@@ -23,11 +23,11 @@ namespace MI_PR_Data_Entry
             }
 
             string tempString = sheetLinkTextBox.Text;
-            int strIndex = tempString.LastIndexOf(Dtarget) + Dtarget.Length;
+            int strIndex = tempString.LastIndexOf(TargetD) + TargetD.Length;
 
             if (strIndex < 0)
             {
-                MainForm.errorMessage = "Invalid link entered for the PR sheet. Enter the full link.\n\nCouldn't find '" + Dtarget + "'";
+                MainForm.errorMessage = "Invalid link entered for the PR sheet. Enter the full link.\n\nCouldn't find '" + TargetD + "'";
                 return true;
             }
 
@@ -36,7 +36,7 @@ namespace MI_PR_Data_Entry
 
             if (strIndex < 0)
             {
-                MainForm.errorMessage = "Invalid link entered for the PR sheet. Enter the full link.\n\nCouldn't find another '" + TargetSlash + "' after '" + Dtarget + "'";
+                MainForm.errorMessage = "Invalid link entered for the PR sheet. Enter the full link.\n\nCouldn't find another '" + TargetSlash + "' after '" + TargetD + "'";
                 return true;
             }
             
