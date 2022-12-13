@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using Google.Apis.Sheets.v4.Data;
 using System.Runtime.CompilerServices;
+using System.Linq;
 
 namespace MI_PR_Data_Entry
 {
@@ -19,7 +20,7 @@ namespace MI_PR_Data_Entry
          * -some functions assume that 5 is used for the start row (or... basically that it uses an odd num)
          */
 
-        private enum FilterType { UserSlug, StartggPlayerID }
+        private enum CellSplitType { UserSlug, StartggPlayerID }
 
         //REORGANIZE LATER, AND MOVE SOME TO SETTINGS
         #region Fields / properties / constants 
@@ -69,49 +70,6 @@ namespace MI_PR_Data_Entry
         #endregion
 
 
-
-        public static Task TestingNamedRanges()
-        {
-            try
-            {
-                SpreadsheetsResource.ValuesResource.GetRequest request = service.Spreadsheets.Values.Get(spreadsheetId, "RecordsEventNameStart");
-
-                ValueRange response = request.Execute();
-
-                IList<IList<object>> values = response.Values;
-
-                if (values != null)
-                {
-                    if (values.Count > 0)
-                    {
-                        foreach (IList<object> objj in values)
-                        {
-                            Console.WriteLine("OBJJ - " + objj.ToString());
-                            foreach (object temppp in objj)
-                            {
-                                Console.WriteLine("tempp - " + temppp.ToString());
-                            }
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("count was 0");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("values is null");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
-
-            return Task.CompletedTask;
-        }
-
-
         public static void SetGeneralTournamentInfo(TournamentResult tournamentResult)//rename? or rename the other method that sounds similar 
         {
             tournamentName = tournamentResult.tournamentName;
@@ -147,57 +105,79 @@ namespace MI_PR_Data_Entry
 
         public static Task GetTrackedPlayerIdentifiers()
         {
-            trackedPlayers = new List<TrackedPlayer>();
-            SheetRange sheetRange = new SheetRange(playersSheetName,
-                spreadsheetPlayerNameColumn + (spreadsheetPlayersNumOfRowsToSkip + 1),//Add 1 since spreadsheet rows start at 1 instead of 0
-                startggPlayerIdsColumn);
-
             try
             {
-                SpreadsheetsResource.ValuesResource.GetRequest request = service.Spreadsheets.Values.Get(spreadsheetId, sheetRange.GetFormattedRange());
-                ValueRange response = request.Execute();
-                IList<IList<object>> values = response.Values;
-
-                if (values != null && values.Count > 0)
+                trackedPlayers = new List<TrackedPlayer>();
+                Dictionary<string, IList<object>> playerDataDict = new Dictionary<string, IList<object>>()
                 {
-                    foreach (IList<object> rowData in values)
+                    { SheetSettings.trackedPlayersPlayerNames, null },
+                    { SheetSettings.userSlugs, null },
+                    { SheetSettings.playerIds, null }
+                };
+                string[] indexesOfIdentifierTypes = playerDataDict.Keys.ToArray();
+
+                //Grab tracked player data from the Google API.
+                SpreadsheetsResource.ValuesResource.BatchGetRequest request = service.Spreadsheets.Values.BatchGet(spreadsheetId);
+                request.Ranges = playerDataDict.Keys.ToArray();
+                BatchGetValuesResponse response = request.Execute();
+
+                if (response.ValueRanges == null || response.ValueRanges.Count == 0)
+                {
+                    throw new Exception("This program received a null response when trying to get named ranges for tracked players.");
+                }
+
+                int targetRowCount = response.ValueRanges[0].Values.Count;
+                if (response.ValueRanges.Any(range => range.Values.Count != targetRowCount))
+                {
+                    throw new Exception("A named range on the " + SheetSettings.trackedPlayersSheetName + " sheet was found to have a row count that didn't match the other named ranges. Are there any rows with empty cells? Do any of the named ranges not extend far enough? On the sheet, click Data -> Named Ranges and check.\n\nNamed ranges involved: " + String.Join(", ", playerDataDict.Keys.ToArray()));
+                }
+
+                for (int i = 0; i < targetRowCount; i++)
+                {
+                    //Temporarily store specific player data from the response to the playerDataDict
+                    for (int copyIndex = 0; copyIndex < indexesOfIdentifierTypes.Length; copyIndex++)
                     {
-                        const int indexMod = 1;//Use this to start at the first index (zero), since no extra data was grabbed.
-                        string playerName = (string)rowData[SheetRange.ColumnSubAsInt(spreadsheetPlayerNameColumn, spreadsheetPlayersNumOfColumnsToSkip) - indexMod];
-                        string userSlugsCellValue = (string)rowData[SheetRange.ColumnSubAsInt(userSlugsColumn, spreadsheetPlayersNumOfColumnsToSkip) - indexMod];
-                        string playerIdsCellValue = (string)rowData[SheetRange.ColumnSubAsInt(startggPlayerIdsColumn, spreadsheetPlayersNumOfColumnsToSkip) - indexMod];
-
-                        List<string> userSlugs = IdentifierFilter(userSlugsCellValue, FilterType.UserSlug);
-                        List<string> playerIds = IdentifierFilter(playerIdsCellValue, FilterType.StartggPlayerID);
-
-                        if (userSlugs.Count == playerIds.Count)
+                        playerDataDict[indexesOfIdentifierTypes[copyIndex]] = response.ValueRanges[copyIndex].Values[i];
+                    }
+                    //Error check for merged or empty cells.
+                    foreach (KeyValuePair<string, IList<object>> kvp in playerDataDict)
+                    {
+                        if (kvp.Value.Count == 0)
                         {
-                            trackedPlayers.Add(new TrackedPlayer(playerName, userSlugs, playerIds));
+                            throw new Exception("A cell for the named range " + kvp.Key + " was empty. All of the tracked player info named ranges need to have the same amount of rows.\n\nNamed ranges involved: " + String.Join(", ", playerDataDict.Keys.ToArray()));
                         }
-                        else
-                        {//TEMPORARY - WRITE WHY THIS FAILED
-                            throw new Exception("");
+                        else if (kvp.Value.Count > 1)
+                        {
+                            throw new Exception("The named range " + kvp.Key + " probably includes a merged cell, when there shouldn't be any.");
                         }
                     }
-                }
-                else
-                {//TEMPORARY - WRITE WHY THIS FAILED
-                    throw new Exception("");
+
+                    const int FirstIndex = 0;
+                    string playerName = playerDataDict[SheetSettings.trackedPlayersPlayerNames][FirstIndex].ToString();
+                    string userSlugsCellValue = playerDataDict[SheetSettings.userSlugs][FirstIndex].ToString();
+                    string playerIdsCellValue = playerDataDict[SheetSettings.playerIds][FirstIndex].ToString();
+
+                    List<string> userSlugs = CellValueToList(userSlugsCellValue, CellSplitType.UserSlug);
+                    List<string> playerIds = CellValueToList(playerIdsCellValue, CellSplitType.StartggPlayerID);
+
+                    if (userSlugs.Count == playerIds.Count)
+                    {
+                        trackedPlayers.Add(new TrackedPlayer(playerName, userSlugs, playerIds));
+                    }
+                    else
+                    {
+                        throw new Exception("A player on the " + SheetSettings.trackedPlayersSheetName + " sheet was found to not have a matching amount of user slugs and player IDs. \n\nPlayer: " + playerName + "\nUser slug count: " + userSlugs.Count + "\nPlayer ID count: " + playerIds.Count);
+                    }
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                if (ex != null)
-                {
-                    throw ex;
-                }
-
-                throw new Exception("GENERIC ERROR\n\n" + ex.ToString());
+                return Task.FromException(ex);
             }
 
             return Task.CompletedTask;
         }
-
+        
         public static Task UploadPlacements()
         {
             SheetRange sheetRange = new SheetRange(placementsSheetName,
@@ -310,12 +290,7 @@ namespace MI_PR_Data_Entry
             }
             catch (Exception ex)
             {
-                if (ex != null)
-                {
-                    throw ex;
-                }
-
-                throw new Exception("GENERIC ERROR\n\n" + ex.ToString());
+                return Task.FromException(ex);
             }
 
             recordsTargetColumn = SheetRange.NumToLetters(targetColumn);
@@ -396,7 +371,7 @@ namespace MI_PR_Data_Entry
 
         #region Filters
 
-        private static List<string> IdentifierFilter(string cellValue, FilterType filterType)
+        private static List<string> CellValueToList(string cellValue, CellSplitType cellSplitType)
         {
             List<string> returnedList = new List<string>();
             string tempStor = string.Empty;
@@ -404,7 +379,7 @@ namespace MI_PR_Data_Entry
             for (int i = 0; i < cellValue.Length; i++)
             {
                 if (Char.IsDigit(cellValue[i])
-                 || (filterType == FilterType.UserSlug && Char.IsLetter(cellValue[i])))
+                 || (cellSplitType == CellSplitType.UserSlug && Char.IsLetter(cellValue[i])))
                 {
                     tempStor += cellValue[i];
                 }

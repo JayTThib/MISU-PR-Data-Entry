@@ -18,6 +18,7 @@ namespace MI_PR_Data_Entry
         private InstructionsForm instructionsForm;
         private SpreadsheetSettingsForm spreadsheetSettingsForm;
 
+        /// <summary></summary>
         private bool isProcessing
         {
             get { return _isProcessing; }
@@ -132,6 +133,7 @@ namespace MI_PR_Data_Entry
             InitializeComponent();
             SheetSettings.LoadSavedSettings();
 
+            #region Init readonly controls lists
             playerIdModeControls = new List<Control>()
             {
                 userSlugLabel,
@@ -173,6 +175,7 @@ namespace MI_PR_Data_Entry
                 targetRecordsColumnLabel,
                 targetRecordsColumnTextBox
             };
+            #endregion
 
             placementsModeRadioButton.Checked = true;
             _currentOperationMode = OperationMode.PlayerId;
@@ -214,19 +217,6 @@ namespace MI_PR_Data_Entry
         private async void placementsAndRecordsExecuteButton_Click(object sender, EventArgs e)
         {
             GeneralProcessingStart();
-
-            if (Validator.ClientSecretFileDoesntExist(clientSecretsPathTextBox.Text) || Validator.AppNameIsInvalid(appNameTextBox.Text) || Validator.InvalidPrSheetLink(sheetIdTextBox))
-            {
-                ErrorHandler();
-                return;
-            }
-
-            await GoogleSheetsManager.SetupService();
-            await GoogleSheetsManager.TestingNamedRanges();
-            Console.WriteLine("FINISHED");
-            return;
-
-
 
             if (Validator.InvalidPrSheetLink(sheetIdTextBox)
                 || Validator.InvalidStartggApiKey(apiKeyTextBox)
