@@ -234,8 +234,9 @@ namespace MI_PR_Data_Entry
                 { async() => { await GoogleSheetsManager.SetupService(); }, "Setting up connection to Google Sheets"},
                 { async() => { await GoogleSheetsManager.GetTrackedPlayerIdentifiers(); }, "Getting tracked player identifiers from Google Sheets"},
                 { async() => { await StartggManager.SetTournamentResultForTrackedPlayers(); }, "Getting tournament results from Start.gg"},
-                { async() => { await GoogleSheetsManager.UploadRecordsHelper_GetTargetColumn(); }, "Getting target spreadsheet column"},
-                { async() => { await GoogleSheetsManager.UploadRecords(); }, "Uploading records to Google Sheets"},
+                { async() => { await GoogleSheetsManager.SetTargetRecordsColumn(); }, "Getting target spreadsheet column"},
+                { async() => { await GoogleSheetsManager.UploadGeneralTournamentInfo(); }, "Uploading general event info to Google Sheets" },
+                { async() => { await GoogleSheetsManager.UploadRecords(); }, "Uploading records to Google Sheets" },
                 { async() => { await GoogleSheetsManager.UploadPlacements(); }, "Uploading placements to Google Sheets"}
             };
             
