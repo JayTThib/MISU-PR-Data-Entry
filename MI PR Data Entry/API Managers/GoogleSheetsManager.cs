@@ -57,14 +57,9 @@ namespace MI_PR_Data_Entry
         private const int recordsSheetColumnsToSkip = 2;
         private const int placementsSheetRowsToSkip = 3;
         private const int placementsColumnsToSkip = 3;
-        private const string playersSheetName = "Spreadsheet Players";
         private const string recordsSheetName = "Records";
         private const string placementsSheetName = "Placements";
-        private const int spreadsheetPlayersNumOfColumnsToSkip = 1;
-        private const int spreadsheetPlayersNumOfRowsToSkip = 1;
-        private const string userSlugsColumn = "D";
-        private const string startggPlayerIdsColumn = "E";
-        private const string spreadsheetPlayerNameColumn = "B";
+
         private const string entrantsLabelStarter = "Entrants: ";
 
         #endregion
