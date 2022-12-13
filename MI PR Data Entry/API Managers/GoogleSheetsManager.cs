@@ -6,8 +6,8 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
 using Google.Apis.Sheets.v4.Data;
-using System.Runtime.CompilerServices;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace MI_PR_Data_Entry
 {
@@ -25,9 +25,7 @@ namespace MI_PR_Data_Entry
         //REORGANIZE LATER, AND MOVE SOME TO SETTINGS
         #region Fields / properties / constants 
 
-        public static Dictionary<string, int> trackedPlayersRowOnRecordsSheet;
-
-        public static string recordsTargetColumn
+        private static string recordsTargetColumn
         {
             get { return MainForm.targetRecordsColumnTB.Text; }
             set { MainForm.targetRecordsColumnTB.Text = value; }
@@ -53,7 +51,6 @@ namespace MI_PR_Data_Entry
         private const string recordsSheetDataColumnStart = "C";
         private const int recordsSheetTournamentNameRow = 1;
         private const int recordsSheetDataRowStart = 4;
-        private const string recordsSheetPlayerNameColumn = "A";
         private const int recordsSheetColumnsToSkip = 2;
         private const int placementsSheetRowsToSkip = 3;
         private const int placementsColumnsToSkip = 3;
@@ -201,25 +198,7 @@ namespace MI_PR_Data_Entry
             return Task.CompletedTask;
         }
 
-        public static async Task UploadRecords()//TEMP- just call each function from MainForm.placementsAndRecordsExecuteButton_Click()
-        {
-            if (recordsTargetColumn == string.Empty)
-            {//TEMP- WRITE ERROR DETAILS
-                return;
-            }
-
-            await UploadGeneralTournamentInfo();
-            await UploadRecordsHelper_SetDict();
-
-            if (trackedPlayersRowOnRecordsSheet == null)
-            {//TEMP- WRITE ERROR DETAILS
-                return;
-            }
-
-            UploadRecordsHelper_SetSheetValues(recordsTargetColumn, trackedPlayersRowOnRecordsSheet);
-        }
-
-        private static Task UploadGeneralTournamentInfo()
+        public static Task UploadGeneralTournamentInfo()
         {
             SheetRange sheetRange = new SheetRange(recordsSheetName,
                 recordsTargetColumn + recordsSheetTournamentNameRow,
@@ -239,7 +218,7 @@ namespace MI_PR_Data_Entry
             return Task.CompletedTask;
         }
 
-        public static Task UploadRecordsHelper_GetTargetColumn()
+        public static Task SetTargetRecordsColumn()
         {
             MainForm.targetRecordsColumnTB.Text = FilterTargetRecordsColumn(MainForm.targetRecordsColumnTB.Text);
 
@@ -293,75 +272,44 @@ namespace MI_PR_Data_Entry
             return Task.CompletedTask;
         }
 
-        private static Task UploadRecordsHelper_SetDict()
+        public static Task UploadRecords()
         {
-            trackedPlayersRowOnRecordsSheet = new Dictionary<string, int>();
+            try
+            {
+                ValueRange targetValueRange = new ValueRange();
+                targetValueRange.Values = new List<IList<object>>();
+                targetValueRange.Range = recordsSheetName + "!" + recordsTargetColumn + recordsSheetDataRowStart.ToString() + ":" + recordsTargetColumn;
 
-            //Get entire player name column on the Records sheet
-            SheetRange sheetRange = new SheetRange(recordsSheetName,
-                recordsSheetPlayerNameColumn + recordsSheetDataRowStart.ToString(),
-                recordsSheetPlayerNameColumn);
-            SpreadsheetsResource.ValuesResource.GetRequest request = service.Spreadsheets.Values.Get(spreadsheetId, sheetRange.GetFormattedRange());
-            ValueRange response = request.Execute();
-            
-            IList<IList<object>> values = response.Values;
-            
-            if (values != null)
-            {
-                if (values.Count > 0)
+                int loopIndex = 0;
+                foreach (TrackedPlayer trackedPlayer in trackedPlayers)
                 {
-                    for (int i = 0; i < values.Count; i++)
+                    targetValueRange.Values.Add(new List<object>());
+                    targetValueRange.Values.Add(new List<object>());
+
+                    if (trackedPlayer.tournamentResult == null)
                     {
-                        if (values[i].Count == 1)
-                        {
-                            trackedPlayersRowOnRecordsSheet.Add(values[i][0].ToString(), recordsSheetDataRowStart + i);
-                        }
+                        targetValueRange.Values[loopIndex].Add(string.Empty);
+                        targetValueRange.Values[loopIndex + 1].Add(string.Empty);
                     }
+                    else
+                    {
+                        targetValueRange.Values[loopIndex].Add(trackedPlayer.tournamentResult.wins);
+                        targetValueRange.Values[loopIndex + 1].Add(trackedPlayer.tournamentResult.losses);
+                    }
+
+                    loopIndex += 2;
                 }
-                else
-                {
-                    //TEMP- WRITE ERROR DETAILS
-                    throw new Exception();
-                }
+
+                SpreadsheetsResource.ValuesResource.UpdateRequest request = service.Spreadsheets.Values.Update(targetValueRange, spreadsheetId, targetValueRange.Range);
+                request.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
+                UpdateValuesResponse response = request.Execute();
             }
-            else
+            catch (Exception ex)
             {
-                //TEMP- WRITE ERROR DETAILS
-                throw new Exception();
+                return Task.FromException(ex);
             }
 
             return Task.CompletedTask;
-        }
-
-        private static void UploadRecordsHelper_SetSheetValues(string targetTournamentColumn, Dictionary<string, int> kvp)
-        {
-            ValueRange targetValueRange = new ValueRange();
-            targetValueRange.Values = new List<IList<object>>();
-            targetValueRange.Range = recordsSheetName + "!" + targetTournamentColumn + recordsSheetDataRowStart.ToString() + ":" + targetTournamentColumn;
-
-            int loopIndex = 0;
-            foreach (TrackedPlayer trackedPlayer in trackedPlayers)
-            {
-                targetValueRange.Values.Add(new List<object>());
-                targetValueRange.Values.Add(new List<object>());
-
-                if (trackedPlayer.tournamentResult == null)
-                {
-                    targetValueRange.Values[loopIndex].Add(string.Empty);
-                    targetValueRange.Values[loopIndex + 1].Add(string.Empty);
-                }
-                else
-                {
-                    targetValueRange.Values[loopIndex].Add(trackedPlayer.tournamentResult.wins);
-                    targetValueRange.Values[loopIndex + 1].Add(trackedPlayer.tournamentResult.losses);
-                }
-
-                loopIndex += 2;
-            }
-
-            SpreadsheetsResource.ValuesResource.UpdateRequest request = service.Spreadsheets.Values.Update(targetValueRange, spreadsheetId, targetValueRange.Range);
-            request.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
-            UpdateValuesResponse response = request.Execute();
         }
 
         #region Filters
@@ -400,7 +348,7 @@ namespace MI_PR_Data_Entry
                 return string.Empty;
             }
 
-            string returnedString = "";
+            string returnedString = string.Empty;
             for (int i = 0; i < target.Length; i++)
             {
                 if (Char.IsLetter(target[i]))
