@@ -327,10 +327,10 @@ namespace MI_PR_Data_Entry
         {
             //Load all saved settings. Use the default app name just to make things easier for the MI PR panel.
             if (Properties.Settings.Default.appName == string.Empty 
-                || Properties.Settings.Default.appName == GoogleSheetsManager.defaultAppName)
+                || Properties.Settings.Default.appName == GoogleSheetsManager.DefaultAppName)
             {
-                appNameTextBox.Text = GoogleSheetsManager.defaultAppName;
-                GoogleSheetsManager.appName = GoogleSheetsManager.defaultAppName;
+                appNameTextBox.Text = GoogleSheetsManager.DefaultAppName;
+                GoogleSheetsManager.appName = GoogleSheetsManager.DefaultAppName;
             }
             else
             {
@@ -362,12 +362,12 @@ namespace MI_PR_Data_Entry
 
         private void clearSavedInfoButton_Click(object sender, EventArgs e)
         {
-            Properties.Settings.Default.appName = GoogleSheetsManager.defaultAppName;
+            Properties.Settings.Default.appName = GoogleSheetsManager.DefaultAppName;
             Properties.Settings.Default.spreadsheetId = string.Empty;
             Properties.Settings.Default.startggAPIKey = string.Empty;
             Properties.Settings.Default.clientSecretPath = string.Empty;
 
-            appNameTextBox.Text = GoogleSheetsManager.defaultAppName;
+            appNameTextBox.Text = GoogleSheetsManager.DefaultAppName;
             sheetIdTextBox.Text = string.Empty;
             apiKeyTextBox.Text = string.Empty;
             clientSecretsPathTextBox.Text = string.Empty;

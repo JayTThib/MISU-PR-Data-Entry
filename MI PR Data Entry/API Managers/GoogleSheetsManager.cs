@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Threading;
 using Google.Apis.Sheets.v4.Data;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace MI_PR_Data_Entry
 {
@@ -25,11 +24,7 @@ namespace MI_PR_Data_Entry
         //REORGANIZE LATER, AND MOVE SOME TO SETTINGS
         #region Fields / properties / constants 
 
-        private static string recordsTargetColumn
-        {
-            get { return MainForm.targetRecordsColumnTB.Text; }
-            set { MainForm.targetRecordsColumnTB.Text = value; }
-        }
+        
 
         ///<summary>The part of the link to the spreadsheet between spreadsheets/d/ and /edit</summary>
         public static string spreadsheetId;
@@ -37,6 +32,13 @@ namespace MI_PR_Data_Entry
         public static List<string> errorsList;
         public static string appName;
         public static string clientSecretsPath;
+        public const string DefaultAppName = "MISU PR Data Entry";
+
+        private static string recordsTargetColumn
+        {
+            get { return MainForm.targetRecordsColumnTB.Text; }
+            set { MainForm.targetRecordsColumnTB.Text = value; }
+        }
 
         private static int recordsSheetTournamentEntrantCountRow = 3;
         private static string placementsSheetTargetColumn;
@@ -47,15 +49,12 @@ namespace MI_PR_Data_Entry
         private static string eventDate;
         private static int numEntrants;
 
-        public const string defaultAppName = "MISU PR Data Entry";
         private const string recordsSheetDataColumnStart = "C";
         private const int recordsSheetTournamentNameRow = 1;
         private const int recordsSheetDataRowStart = 4;
         private const int recordsSheetColumnsToSkip = 2;
         private const int placementsSheetRowsToSkip = 3;
         private const int placementsColumnsToSkip = 3;
-        private const string recordsSheetName = "Records";
-        private const string placementsSheetName = "Placements";
 
         private const string entrantsLabelStarter = "Entrants: ";
 
@@ -172,7 +171,7 @@ namespace MI_PR_Data_Entry
         
         public static Task UploadPlacements()
         {
-            SheetRange sheetRange = new SheetRange(placementsSheetName,
+            SheetRange sheetRange = new SheetRange(SheetSettings.placementsSheetName,
                 placementsSheetTargetColumn + (placementsSheetRowsToSkip + 1).ToString(),//Add one since spreadsheets start their rows at 1 instead of 0.
                 placementsSheetTargetColumn + (trackedPlayers.Count + placementsSheetRowsToSkip).ToString());
 
@@ -200,7 +199,7 @@ namespace MI_PR_Data_Entry
 
         public static Task UploadGeneralTournamentInfo()
         {
-            SheetRange sheetRange = new SheetRange(recordsSheetName,
+            SheetRange sheetRange = new SheetRange(SheetSettings.recordsSheetName,
                 recordsTargetColumn + recordsSheetTournamentNameRow,
                 recordsTargetColumn + recordsSheetTournamentEntrantCountRow);
 
@@ -230,7 +229,7 @@ namespace MI_PR_Data_Entry
             }
 
             //Get the entire row containing tournament names on the Records sheet
-            SheetRange sheetRange = new SheetRange(recordsSheetName,
+            SheetRange sheetRange = new SheetRange(SheetSettings.recordsSheetName,
                 recordsSheetDataColumnStart + recordsSheetTournamentNameRow.ToString(),
                 recordsSheetTournamentNameRow.ToString());
 
@@ -278,7 +277,7 @@ namespace MI_PR_Data_Entry
             {
                 ValueRange targetValueRange = new ValueRange();
                 targetValueRange.Values = new List<IList<object>>();
-                targetValueRange.Range = recordsSheetName + "!" + recordsTargetColumn + recordsSheetDataRowStart.ToString() + ":" + recordsTargetColumn;
+                targetValueRange.Range = SheetSettings.recordsSheetName + "!" + recordsTargetColumn + recordsSheetDataRowStart.ToString() + ":" + recordsTargetColumn;
 
                 int loopIndex = 0;
                 foreach (TrackedPlayer trackedPlayer in trackedPlayers)
