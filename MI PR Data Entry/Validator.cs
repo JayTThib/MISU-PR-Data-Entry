@@ -229,19 +229,5 @@ namespace MI_PR_Data_Entry
                 return true;
             }
         }
-
-        public static bool AppNameIsInvalid(string appName)
-        {
-            if (appName == string.Empty)
-            {
-                MainForm.errorMessage = "Enter the application name that you're using.\n\nSteps to find it-\n-Go to https://console.cloud.google.com/apis/dashboard\n-Under APIs & Services, click OAuth consent screen.\n-It's the name right next to where it says EDIT APP.";
-                return true;
-            }
-
-            GoogleSheetsManager.appName = appName;
-            Properties.Settings.Default.appName = appName;
-
-            return false;
-        }
     }
 }

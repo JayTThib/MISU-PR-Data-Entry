@@ -104,6 +104,7 @@
       <HintPath>..\packages\System.ComponentModel.Annotations.6.0.0-preview.4.21253.7\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
     </Reference>
@@ -135,30 +136,25 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SheetSettings.cs" />
-    <Compile Include="Forms\SheetSettingsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\SheetSettingsForm.Designer.cs">
-      <DependentUpon>SheetSettingsForm.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Cell.cs" />
     <Compile Include="API Managers\StartggManager.cs" />
-    <Compile Include="Forms\InstructionsForm.cs">
+    <Compile Include="Forms\InitialSetupInstructionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\InstructionsForm.Designer.cs">
-      <DependentUpon>InstructionsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\SpreadsheetSettingsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\SpreadsheetSettingsForm.Designer.cs">
-      <DependentUpon>SpreadsheetSettingsForm.cs</DependentUpon>
+    <Compile Include="Forms\InitialSetupInstructionsForm.Designer.cs">
+      <DependentUpon>InitialSetupInstructionsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="API Managers\GoogleSheetsManager.cs" />
+    <Compile Include="Forms\OperationInstructionsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\OperationInstructionsForm.Designer.cs">
+      <DependentUpon>OperationInstructionsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="SheetRange.cs" />
     <Compile Include="StartggObjects\Other\Tournament.cs" />
     <Compile Include="TrackedPlayer.cs" />
@@ -182,11 +178,11 @@
     <Compile Include="StartggObjects\Root Objects\RootObjPlacement.cs" />
     <Compile Include="StartggObjects\Root Objects\RootObjPlayerId.cs" />
     <Compile Include="TournamentResult.cs" />
-    <EmbeddedResource Include="Forms\InstructionsForm.resx">
-      <DependentUpon>InstructionsForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\OperationInstructionsForm.resx">
+      <DependentUpon>OperationInstructionsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -197,11 +193,8 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Forms\SheetSettingsForm.resx">
-      <DependentUpon>SheetSettingsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\SpreadsheetSettingsForm.resx">
-      <DependentUpon>SpreadsheetSettingsForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\InitialSetupInstructionsForm.resx">
+      <DependentUpon>InitialSetupInstructionsForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

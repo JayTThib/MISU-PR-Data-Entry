@@ -1,6 +1,6 @@
 ﻿namespace MI_PR_Data_Entry
 {
-    partial class InstructionsForm
+    partial class InitialSetupInstructionsForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,28 +28,27 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InitialSetupInstructionsForm));
             this.instructionsLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // instructionsLabel
             // 
-            this.instructionsLabel.AutoSize = true;
-            this.instructionsLabel.Location = new System.Drawing.Point(13, 13);
+            this.instructionsLabel.Location = new System.Drawing.Point(2, 9);
             this.instructionsLabel.Name = "instructionsLabel";
-            this.instructionsLabel.Size = new System.Drawing.Size(35, 13);
+            this.instructionsLabel.Size = new System.Drawing.Size(801, 397);
             this.instructionsLabel.TabIndex = 0;
-            this.instructionsLabel.Text = "label1";
+            this.instructionsLabel.Text = resources.GetString("instructionsLabel.Text");
             // 
-            // InstructionsForm
+            // InitialSetupInstructionsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(800, 411);
             this.Controls.Add(this.instructionsLabel);
-            this.Name = "InstructionsForm";
-            this.Text = "Instructions";
+            this.Name = "InitialSetupInstructionsForm";
+            this.Text = "Initial Setup Instructions";
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 

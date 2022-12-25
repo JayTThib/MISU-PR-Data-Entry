@@ -117,4 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="operationInstructionsLabel.Text" xml:space="preserve">
+    <value>Before you can fill the spreadsheet with tournament results, you need to fill out the Start.gg user slugs and Start.gg player IDs for the tracked players on the spreadsheet.
+
+1. Go to the Start.gg profile of the player that you're tracking. As an example, here's the link to Zinoto's profile: https://www.start.gg/user/9c882d5c
+
+2. Copy ONLY the unique ID part of that link (9c882d5c from the example with Zinoto) and paste it onto the spreadsheet for the player's user slug. If a player has multiple accounts (or if they were manually added to a tournament), you can have multiple slugs separated by a comma or space. 
+
+3. Switch the app mode to Get Start.gg Player ID, and paste that ID into the user slug text field. Click execute and wait for it to print back their player ID. 
+
+4. Copy that player ID onto the PR sheet. Player IDs have to be in the same order as the user slugs.
+
+After doing that for each player, you can now switch to the output placements and records mode.
+
+1. Copy the Start.gg standings link to an event and paste it into the event slug field. Here's one as an example: https://www.start.gg/tournament/bahamut-ann-arbor-regional-1/event/ultimate-singles/standings
+
+2. You can leave the target records sheet column field blank if you just want this program to paste the data into the first empty column it finds. If you specify a target column, make sure that its matching column on the placements sheet is also empty.
+
+3. Click execute and wait for it to complete.</value>
+  </data>
 </root>

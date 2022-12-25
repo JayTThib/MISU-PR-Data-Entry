@@ -4,21 +4,96 @@ namespace MI_PR_Data_Entry
 {
     public struct SheetRange
     {
-        public string rangeStart { get; set; }
-        public string rangeEnd { get; set; }
+        public Cell rangeStart { get; set; }
+        public Cell rangeEnd { get; set; }
+
         public string sheetName { get; set; }
 
+        private const char RangeStartMarker = '!';
+        private const char RangeMiddleMarker = ':';
 
-        public SheetRange(string sheetName, string rangeStart, string rangeEnd)
+        public SheetRange(string sheetName, Cell rangeStart, Cell rangeEnd)
         {
             this.sheetName = sheetName;
             this.rangeStart = rangeStart;
             this.rangeEnd = rangeEnd;
         }
 
+        public SheetRange(string range)
+        {
+            this.sheetName = GetSheetNameFromRange(range);
+            this.rangeStart = GetStartCellFromRange(range);
+            this.rangeEnd = GetEndCellFromRange(range);
+        }
+
+        public static string GetSheetNameFromRange(string range)
+        {
+            return range.Substring(0, range.LastIndexOf(RangeStartMarker));
+        }
+
+        public static Cell GetStartCellFromRange(string range)
+        {
+            int cellStartIndex = range.LastIndexOf(RangeStartMarker) + 1;
+            Cell cell = new Cell();
+            string cellRow = string.Empty;
+
+            for (int i = cellStartIndex; i < range.Length; i++)
+            {
+                if (Char.IsLetter(range[i]))
+                {
+                    cell.column += range[i];
+                }
+                else if (char.IsDigit(range[i]))
+                {
+                    cellRow += range[i];
+                }
+                else if (range[i] == RangeMiddleMarker)
+                {
+                    break;
+                }
+                else
+                {
+                    throw new Exception("Invalid char " + range[i] + " found inside of range: " + range);
+                }
+            }
+
+            cell.row = Int32.Parse(cellRow);
+            return cell;
+        }
+
+        public static Cell GetEndCellFromRange(string range)
+        {
+            int cellStartIndex = range.LastIndexOf(RangeMiddleMarker) + 1;
+            Cell cell = new Cell();
+            string cellRow = string.Empty;
+
+            for (int i = cellStartIndex; i < range.Length; i++)
+            {
+                if (char.IsLetter(range[i]))
+                {
+                    cell.column += range[i];
+                }
+                else if (char.IsDigit(range[i]))
+                {
+                    cellRow += range[i];
+                }
+                else
+                {
+                    throw new Exception();
+                }
+            }
+
+            cell.row = Int32.Parse(cellRow);
+            return cell;
+        }
 
         /// <summary>Formats the sheetName, rangeStart and rangeEnd into one string. Used specifically for requests to Google Sheets.</summary>
         public string GetFormattedRange()
+        {
+            return $"{sheetName}!{rangeStart}:{rangeEnd}";
+        }
+
+        public static string GetFormattedRange(string sheetName, string rangeStart, string rangeEnd)
         {
             return $"{sheetName}!{rangeStart}:{rangeEnd}";
         }
@@ -96,26 +171,16 @@ namespace MI_PR_Data_Entry
 
         #region Column math
 
-        public static string ColumnAddAsStr(string column, int addition)
+        public static string ModifyColumnAsString(string column, int modifier)
         {
-            return NumToLetters(LettersToNum(column) + addition);
+            return NumToLetters(LettersToNum(column) + modifier);
         }
 
-        public static string ColumnSubAsStr(string column, int subtraction)
+        public static int ModifyColumnAsInt(string column, int modifier)
         {
-            return NumToLetters(LettersToNum(column) - subtraction);
+            return LettersToNum(column) + modifier;
         }
-
-        public static int ColumnAddAsInt(string column, int addition)
-        {
-            return LettersToNum(column) + addition;
-        }
-
-        public static int ColumnSubAsInt(string column, int subtraction)
-        {
-            return LettersToNum(column) - subtraction;
-        }
-
+        
         #endregion
     }
 }

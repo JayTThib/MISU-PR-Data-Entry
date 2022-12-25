@@ -1,6 +1,6 @@
-﻿namespace MI_PR_Data_Entry
+﻿namespace MI_PR_Data_Entry.Forms
 {
-    partial class SpreadsheetSettingsForm
+    partial class OperationInstructionsForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,33 +28,32 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OperationInstructionsForm));
+            this.operationInstructionsLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // label1
+            // operationInstructionsLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(2, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(105, 26);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "TESTTTTTTTTTTT\r\nadwawd";
+            this.operationInstructionsLabel.Location = new System.Drawing.Point(12, 9);
+            this.operationInstructionsLabel.Name = "operationInstructionsLabel";
+            this.operationInstructionsLabel.Size = new System.Drawing.Size(643, 317);
+            this.operationInstructionsLabel.TabIndex = 0;
+            this.operationInstructionsLabel.Text = resources.GetString("operationInstructionsLabel.Text");
             // 
-            // SpreadsheetSettingsForm
+            // OperationInstructionsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.label1);
-            this.Name = "SpreadsheetSettingsForm";
-            this.Text = "Spreadsheet Requirements";
+            this.ClientSize = new System.Drawing.Size(666, 326);
+            this.Controls.Add(this.operationInstructionsLabel);
+            this.Name = "OperationInstructionsForm";
+            this.Text = "Operation Instructions";
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label operationInstructionsLabel;
     }
 }

@@ -1,6 +1,6 @@
-﻿using System;
+﻿using MI_PR_Data_Entry.Forms;
+using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MI_PR_Data_Entry
@@ -12,11 +12,11 @@ namespace MI_PR_Data_Entry
 
         #region Fields / properties / constants
         public static TextBox targetRecordsColumnTB;
+        public static Label status;
         public static string errorMessage;
 
-        private SheetSettingsForm sheetSettingsForm;
-        private InstructionsForm instructionsForm;
-        private SpreadsheetSettingsForm spreadsheetSettingsForm;
+        private InitialSetupInstructionsForm initialSetupInstructionsForm;
+        private OperationInstructionsForm operationInstructionsForm;
 
         /// <summary></summary>
         private bool isProcessing
@@ -31,22 +31,12 @@ namespace MI_PR_Data_Entry
                     {
                         con.Enabled = false;
                     }
-
-                    if (sheetSettingsForm != null)
-                    {
-                        sheetSettingsForm.SetControlsEnabledStatus(false);
-                    }
                 }
                 else
                 {
                     foreach (Control con in controlsDisabledWhileProcessing)
                     {
                         con.Enabled = true;
-                    }
-
-                    if (sheetSettingsForm != null)
-                    {
-                        sheetSettingsForm.SetControlsEnabledStatus(true);
                     }
                 }
 
@@ -131,7 +121,6 @@ namespace MI_PR_Data_Entry
         public MainForm()
         {
             InitializeComponent();
-            SheetSettings.LoadSavedSettings();
 
             #region Init readonly controls lists
             playerIdModeControls = new List<Control>()
@@ -154,8 +143,6 @@ namespace MI_PR_Data_Entry
 
             controlsDisabledWhileProcessing = new List<Control>()
             {
-                appNameLabel,
-                appNameTextBox,
                 sheetIdLabel,
                 sheetIdTextBox,
                 apiKeyLabel,
@@ -173,7 +160,8 @@ namespace MI_PR_Data_Entry
                 eventSlugTextBox,
                 placementsAndRecordsExecuteButton,
                 targetRecordsColumnLabel,
-                targetRecordsColumnTextBox
+                targetRecordsColumnTextBox,
+                clearSavedInfoButton
             };
             #endregion
 
@@ -182,10 +170,24 @@ namespace MI_PR_Data_Entry
             currentOperationMode = OperationMode.PlacementsAndRecords;
             statusLabel.Text = StatusLabelOpener + StatusLabelWaiting;
             targetRecordsColumnTB = targetRecordsColumnTextBox;
+            status = statusLabel;
         }
 
 
         #region Button click functions
+        private void clearSavedInfoButton_Click(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.spreadsheetId = string.Empty;
+            Properties.Settings.Default.startggAPIKey = string.Empty;
+            Properties.Settings.Default.clientSecretPath = string.Empty;
+
+            sheetIdTextBox.Text = string.Empty;
+            apiKeyTextBox.Text = string.Empty;
+            clientSecretsPathTextBox.Text = string.Empty;
+
+            Properties.Settings.Default.Save();
+            MessageBox.Show("Cleared saved info.");
+        }
 
         private async void playerIdExecuteButton_Click(object sender, EventArgs e)
         {
@@ -213,7 +215,6 @@ namespace MI_PR_Data_Entry
             SuccessfullyFinishedProcessing(outputPlayerIdTextBox);
         }
         
-
         private async void placementsAndRecordsExecuteButton_Click(object sender, EventArgs e)
         {
             GeneralProcessingStart();
@@ -221,40 +222,22 @@ namespace MI_PR_Data_Entry
             if (Validator.InvalidPrSheetLink(sheetIdTextBox)
                 || Validator.InvalidStartggApiKey(apiKeyTextBox)
                 || Validator.EventSlugIsInvalid(eventSlugTextBox.Text)
-                || Validator.ClientSecretFileDoesntExist(clientSecretsPathTextBox.Text) 
-                || Validator.AppNameIsInvalid(appNameTextBox.Text))
+                || Validator.ClientSecretFileDoesntExist(clientSecretsPathTextBox.Text))
             {
                 ErrorHandler();
                 return;
             }
 
-            #region Try to call the APIs and process data (step by step, not simultaneously); if it fails at any point then abort doing the rest of the steps.
-            Dictionary<Func<Task>, string> funcAndStatusDict = new Dictionary<Func<Task>, string>()
+            try
             {
-                { async() => { await GoogleSheetsManager.SetupService(); }, "Setting up connection to Google Sheets"},
-                { async() => { await GoogleSheetsManager.GetTrackedPlayerIdentifiers(); }, "Getting tracked player identifiers from Google Sheets"},
-                { async() => { await StartggManager.SetTournamentResultForTrackedPlayers(); }, "Getting tournament results from Start.gg"},
-                { async() => { await GoogleSheetsManager.SetTargetRecordsColumn(); }, "Getting target spreadsheet column"},
-                { async() => { await GoogleSheetsManager.UploadGeneralTournamentInfo(); }, "Uploading general event info to Google Sheets" },
-                { async() => { await GoogleSheetsManager.UploadRecords(); }, "Uploading records to Google Sheets" },
-                { async() => { await GoogleSheetsManager.UploadPlacements(); }, "Uploading placements to Google Sheets"}
-            };
-            
-            foreach (KeyValuePair<Func<Task>, string> kvp in funcAndStatusDict)
-            {
-                try
-                {
-                    statusLabel.Text = kvp.Value;
-                    await kvp.Key.Invoke();
-                }
-                catch (Exception ex)
-                {
-                    errorMessage = ex.ToString();
-                    ErrorHandler();
-                    return;
-                }
+                await GoogleSheetsManager.ProcessEventData();
             }
-            #endregion
+            catch (Exception ex)
+            {
+                errorMessage = ex.ToString();
+                ErrorHandler();
+                return;
+            }
 
             targetRecordsColumnTextBox.Text = string.Empty;
             SuccessfullyFinishedProcessing(eventSlugTextBox);
@@ -278,29 +261,20 @@ namespace MI_PR_Data_Entry
             }
         }
 
-        private void viewSheetRequirementsButton_Click(object sender, EventArgs e)
+        private void viewInitialSetupInstructionsButton_Click(object sender, EventArgs e)
         {
-            spreadsheetSettingsForm = new SpreadsheetSettingsForm();
-            spreadsheetSettingsForm.Show();
+            initialSetupInstructionsForm = new InitialSetupInstructionsForm();
+            initialSetupInstructionsForm.Show();
         }
 
-        private void instructionsButton_Click(object sender, EventArgs e)
+        private void viewOperationInstructionsButton_Click(object sender, EventArgs e)
         {
-            instructionsForm = new InstructionsForm();
-            instructionsForm.Show();
+            operationInstructionsForm = new OperationInstructionsForm();
+            operationInstructionsForm.Show();
         }
-
-        private void sheetSettingsButton_Click(object sender, EventArgs e)
-        {
-            sheetSettingsForm = new SheetSettingsForm();
-            sheetSettingsForm.Show();
-        }
-
         #endregion
 
-
         #region Misc MainForm methods
-
         /// <summary>Clear temporary data (such as error info), and set isProcessing to true. This will disable all controls related to settings.</summary>
         private void GeneralProcessingStart()
         {
@@ -325,19 +299,6 @@ namespace MI_PR_Data_Entry
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            //Load all saved settings. Use the default app name just to make things easier for the MI PR panel.
-            if (Properties.Settings.Default.appName == string.Empty 
-                || Properties.Settings.Default.appName == GoogleSheetsManager.DefaultAppName)
-            {
-                appNameTextBox.Text = GoogleSheetsManager.DefaultAppName;
-                GoogleSheetsManager.appName = GoogleSheetsManager.DefaultAppName;
-            }
-            else
-            {
-                appNameTextBox.Text = Properties.Settings.Default.appName;
-                GoogleSheetsManager.appName = Properties.Settings.Default.appName;
-            }
-
             sheetIdTextBox.Text = Properties.Settings.Default.spreadsheetId;
             apiKeyTextBox.Text = Properties.Settings.Default.startggAPIKey;
             clientSecretsPathTextBox.Text = Properties.Settings.Default.clientSecretPath;
@@ -356,24 +317,8 @@ namespace MI_PR_Data_Entry
             controlToFocusOn.Focus();
             statusLabel.Text = StatusLabelOpener + StatusLabelSuccess + StatusLabelWaiting;
             isProcessing = false;
+            targetRecordsColumnTextBox.Text = string.Empty;
         }
-
         #endregion
-
-        private void clearSavedInfoButton_Click(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.appName = GoogleSheetsManager.DefaultAppName;
-            Properties.Settings.Default.spreadsheetId = string.Empty;
-            Properties.Settings.Default.startggAPIKey = string.Empty;
-            Properties.Settings.Default.clientSecretPath = string.Empty;
-
-            appNameTextBox.Text = GoogleSheetsManager.DefaultAppName;
-            sheetIdTextBox.Text = string.Empty;
-            apiKeyTextBox.Text = string.Empty;
-            clientSecretsPathTextBox.Text = string.Empty;
-
-            Properties.Settings.Default.Save();
-            MessageBox.Show("Cleared saved info.");
-        }
     }
 }
