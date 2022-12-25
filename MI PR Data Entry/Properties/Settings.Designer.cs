@@ -12,7 +12,7 @@ namespace MI_PR_Data_Entry.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.3.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.4.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -56,138 +56,6 @@ namespace MI_PR_Data_Entry.Properties {
             }
             set {
                 this["spreadsheetId"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string appName {
-            get {
-                return ((string)(this["appName"]));
-            }
-            set {
-                this["appName"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string recordsSheetName {
-            get {
-                return ((string)(this["recordsSheetName"]));
-            }
-            set {
-                this["recordsSheetName"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string placementsSheetName {
-            get {
-                return ((string)(this["placementsSheetName"]));
-            }
-            set {
-                this["placementsSheetName"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string trackedPlayersSheetName {
-            get {
-                return ((string)(this["trackedPlayersSheetName"]));
-            }
-            set {
-                this["trackedPlayersSheetName"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string recordsPlayerNames {
-            get {
-                return ((string)(this["recordsPlayerNames"]));
-            }
-            set {
-                this["recordsPlayerNames"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string recordsPlayerData {
-            get {
-                return ((string)(this["recordsPlayerData"]));
-            }
-            set {
-                this["recordsPlayerData"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string eventGeneralInfo {
-            get {
-                return ((string)(this["eventGeneralInfo"]));
-            }
-            set {
-                this["eventGeneralInfo"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string trackedPlayersPlayerNames {
-            get {
-                return ((string)(this["trackedPlayersPlayerNames"]));
-            }
-            set {
-                this["trackedPlayersPlayerNames"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string userSlugs {
-            get {
-                return ((string)(this["userSlugs"]));
-            }
-            set {
-                this["userSlugs"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string playerIds {
-            get {
-                return ((string)(this["playerIds"]));
-            }
-            set {
-                this["playerIds"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string placementsData {
-            get {
-                return ((string)(this["placementsData"]));
-            }
-            set {
-                this["placementsData"] = value;
             }
         }
     }

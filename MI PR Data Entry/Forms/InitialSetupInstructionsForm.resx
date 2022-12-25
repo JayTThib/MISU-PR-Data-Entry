@@ -117,4 +117,29 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="instructionsLabel.Text" xml:space="preserve">
+    <value>Setting this up might seem like a lot of work, but you'll only have to do it once. There are three things you'll need before you can start inputting data with this app.
+
+1- A direct link to the PR spreadsheet. Just post the entire link, don't use a shortened one or something that redirects to it. The spreadsheet also needs to have general access set to "anyone with a link", this will not work with spreadsheets that can only be viewed privately.
+
+2- A Start.gg API key. Go to https://developer.start.gg/docs/authentication and follow their instructions.
+
+3- A client_secret.json file from Google. What this basically does, is allow for the program to use OAuth 2.0 to access Google's APIs. There are a couple of extra steps to get this file. 
+
+3.1- Go to this link and sign into your account https://console.cloud.google.com/apis/dashboard
+
+3.2- On the left side under APIs and Services, go to Credentials. Click CREATE PROJECT on the right. It doesn't matter what you use for the project name or location. 
+
+3.3- After it finishes creating the project (might take a few min), Click Enabled APIs &amp; services on the left. Near the top, click ENABLE APIS AND SERVICES. Search for "google sheets" and enable Google Sheets API.
+
+3.4- While looking at the Google Sheets API, there should now be a button near the top right that says CREATE CREDENTIALS. Click it and select Google Sheets API when it asks to pick an API. Select User data for the data that you'll be accessing. Click NEXT.
+
+3.5- Write whatever you want for the app name. Put your email into the user support email and developer contact information fields. Having an app logo doesn't matter. Click SAVE AND CONTINUE.
+
+3.6- Click ADD OR REMOVE SCOPES. Select the one that has Google Sheets API for the API, and a Scope of .../auth/drive.file. Scroll down and click UPDATE. Click SAVE AND CONTINUE.
+
+3.7- Select Desktop app for the application type. Name it whatever you want. Click CREATE. Click the DOWNLOAD button to grab the json file that we need. Click DONE.
+
+You're good to go! </value>
+  </data>
 </root>
