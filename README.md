@@ -1,11 +1,3 @@
-
-## **TODO**<br>
--
--
--
--
-<hr>
-
 ## **Dependencies**<br>
 Google.Apis<br>
 Google.Apis.Auth<br>
